@@ -17,7 +17,7 @@ object HttpSherlock {
             "password":  "password1"
           }
         """
-      ),
+      )
     )
     .asJson
     .check(status is 200)
