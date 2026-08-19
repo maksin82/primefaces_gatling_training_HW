@@ -11,4 +11,5 @@ object HttpSherlockScenario {
 class HttpSherlockScenario {
   val scn: ScenarioBuilder = scenario("Http Sherlock Scenario")
     .exec(HttpSherlock.postCreate)
+    .exec(HttpSherlock.getSingleUser)
 }

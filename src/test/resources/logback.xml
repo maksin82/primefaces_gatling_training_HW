@@ -1,59 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <if condition='property("CONSOLE_LOGGING").contains("ON")'>
-        <then>
-            <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-                <encoder>
-                    <pattern>%date{yyy-MM-dd'T'HH:mm:ss.SSSXXX, UTC} ${PROJECT:-debug}%replace(%msg){'[\r\n]+', ' '}%n</pattern>
-                </encoder>
-            </appender>
-        </then>
-    </if>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%-5level] %logger{15} - %msg%n%rEx</pattern>
+            <immediateFlush>false</immediateFlush>
+        </encoder>
+    </appender>
 
-    <if condition='property("FILE_LOGGING").contains("ON")'>
-        <then>
-            <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <filter class="ch.qos.logback.classic.filter.LevelFilter">
-                    <level>DEBUG</level>
-                    <onMatch>ACCEPT</onMatch>
-                    <onMismatch>DENY</onMismatch>
-                </filter>
-                <encoder>
-                    <pattern>%date{yyy-MM-dd'T'HH:mm:ss.SSSXXX, UTC} ${PROJECT:-debug}%replace(%msg){'[\r\n]+', ' '}%n</pattern>
-                </encoder>
-                <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                    <fileNamePattern>target/gatling-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-                    <maxFileSize>100MB</maxFileSize>
-                    <maxHistory>5</maxHistory>
-                    <totalSizeCap>500MB</totalSizeCap>
-                </rollingPolicy>
-            </appender>
+    <timestamp key="tiestamp" datePattern="yyyy-MM-dd'T'HH:mm:ss"/>
 
-            <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
-                <appender-ref ref="FILE"/>
-            </appender>
-        </then>
-    </if>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/test_${timestamp}.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%-5level] %logger{15} - %msg%n%rEx</pattern>
+        </encoder>
+    </appender>
 
-    <logger name="io.gatling.http.engine.response.DefaultStatsProcessor" level="DEBUG"/>
+    <!-- TRACE logs all HTTP requests/response, DEBUG logs only failed HTTP requests/response-->
+    <logger name="io.gatling.http.engine.response" level="TRACE" />
+    <logger name="io.gatling.http.ahc" level="DEBUG" />
+    <logger name="com.github.phisgr.gatling.grpc" level="TRACE" />
 
-    <root level="${ROOT_LOGGING_LEVEL:-ERROR}">
-        <if condition='property("CONSOLE_LOGGING").contains("ON")'>
-            <then>
-                <appender-ref ref="CONSOLE"/>
-            </then>
-        </if>
-        <if condition='property("FILE_LOGGING").contains("ON")'>
-            <then>
-                <appender-ref ref="ASYNC_FILE"/>
-            </then>
-        </if>
-        <if condition='property("GRAYLOG_LOGGING").contains("ON")'>
-            <then>
-                <appender-ref ref="ASYNC_GELF"/>
-            </then>
-        </if>
+
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
     </root>
 
 </configuration>

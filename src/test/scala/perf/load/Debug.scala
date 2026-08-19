@@ -11,6 +11,7 @@ class Debug extends Simulation {
   ).protocols(
     httpProtocol,
   ).assertions(
+    global.failedRequests.percent.lte(1.0),
     global.responseTime.mean.lt(500), // среднее < 500 мс
     global.successfulRequests.percent.gt(99) // успешных > 99 %
   ).maxDuration(testDuration)
