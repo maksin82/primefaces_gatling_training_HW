@@ -12,7 +12,7 @@ object HttpDummyapiScenario {
 
 class HttpDummyapiScenario {
   val feeder = Iterator.continually(
-    Map("mail" -> s"Jakayla${Random.nextInt(1000)}@hotmail.com")
+    Map("mail" -> s"Jakayla${Random.nextInt(100000)}@hotmail.com")
   )
   val scn: ScenarioBuilder = scenario("Http Dummyapi Scenario")
     .feed(feeder)
