@@ -13,8 +13,8 @@ object HttpSherlock {
       StringBody(
         """
           {
-            "username": "sherlock",
-            "password":  "password1"
+            "username": "#{login}",
+            "password":  "#{pass}"
           }
         """
       )

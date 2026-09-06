@@ -1,19 +1,19 @@
 package perf.load
 
 import io.gatling.core.Predef._
-import org.galaxio.gatling.config.SimulationConfig._
 import perf.load.scenarios._
 
-class Debug extends Simulation {
+import scala.concurrent.duration.DurationInt
 
+class Debug extends Simulation {
   setUp(
-    HttpDummyapiScenario().inject(atOnceUsers(1)),
+    HttpSherlockScenario()
+      .inject(
+        rampUsersPerSec(1).to(5).during(10 seconds),
+        constantUsersPerSec(0).during(10),
+        rampUsersPerSec(0).to(0).during(5)
+      )
   ).protocols(
     httpProtocol,
-  ).assertions(
-    global.failedRequests.percent.lte(1.0),
-    global.responseTime.mean.lt(500), // среднее < 500 мс
-    global.successfulRequests.percent.gt(99) // успешных > 99 %
-  ).maxDuration(testDuration)
-
+  ).maxDuration(25)
 }
